@@ -19,17 +19,19 @@ RUN useradd -m -s /bin/sh -u "${PUID}" -g "${PGID}" appuser
 
 WORKDIR /app
 
+# Install the CUDA-matched PyTorch build before packages such as
+# diffusers[torch] are resolved.  Otherwise pip may select a newer CUDA 13
+# PyPI build and spend a long time backtracking through its NVIDIA packages.
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+
 # Get sd-scripts from kohya-ss and install them
 RUN git clone -b sd3 https://github.com/kohya-ss/sd-scripts && \
     cd sd-scripts && \
-    pip install --no-cache-dir -r ./requirements.txt
+    pip install --no-cache-dir --prefer-binary -r ./requirements.txt
 
 # Install main application dependencies
 COPY ./requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r ./requirements.txt
-
-# Install Torch, Torchvision, and Torchaudio for CUDA 12.4
-RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 
 RUN chown -R appuser:appuser /app
 
