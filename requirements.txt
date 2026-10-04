@@ -13,7 +13,6 @@ einops
 accelerate
 toml
 albumentations
-pydantic
 omegaconf
 k-diffusion
 open_clip_torch
