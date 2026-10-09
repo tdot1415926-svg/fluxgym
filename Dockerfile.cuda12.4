@@ -24,7 +24,8 @@ RUN pip install --no-cache-dir torch torchvision torchaudio \
 # FluxGym imports library and train_network directly from sd-scripts at runtime,
 # so this directory must remain in the final image.
 RUN git clone --depth 1 -b sd3 https://github.com/kohya-ss/sd-scripts && \
-    pip install --no-cache-dir --prefer-binary -r sd-scripts/requirements.txt
+    cd sd-scripts && \
+    pip install --no-cache-dir --prefer-binary -r requirements.txt
 
 COPY requirements.txt ./requirements.txt
 # The legacy FluxGym dependency list contains loose and overlapping pins. The
